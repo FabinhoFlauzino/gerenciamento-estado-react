@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import Area from "../template/Area";
-import ContadorContext from "@/context/ContadorContext";
+import ContadorContext from "@/data/context/ContadorContext";
 
 export default function Mais() {
 
