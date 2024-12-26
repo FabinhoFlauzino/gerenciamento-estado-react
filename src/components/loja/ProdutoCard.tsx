@@ -1,13 +1,17 @@
+import CarrinhoContext from "@/data/context/CarrinhoContext"
 import Produto from "@/data/model/Produto"
 import Real from "@/utils/Real"
 import { IconShoppingCartPlus } from "@tabler/icons-react"
 import Image from "next/image"
+import { useContext } from "react"
 
 interface ProdutoCardProps {
   produto: Produto
 }
 
 export default function ProdutoCard({ produto }: ProdutoCardProps) {
+  const { adicionarItem } = useContext(CarrinhoContext)
+
   return (
     <div className="flex flex-col gap-3 p-2 rounded-md overflow-hidden bg-zinc-950">
       <Image
@@ -22,7 +26,9 @@ export default function ProdutoCard({ produto }: ProdutoCardProps) {
         <span className="text-green-300">{Real.format(produto.preco)}</span>
       </div>
       <p className="px-4 text-sm text-zinc-400">{produto.descricao}</p>
-      <button className="flex justify-center gap-2 btn-info"><IconShoppingCartPlus /> Adicionar</button>
+      <button className="flex justify-center gap-2 btn-info" onClick={() => adicionarItem(produto)}>
+        <IconShoppingCartPlus /> Adicionar
+      </button>
     </div>
   )
 }
