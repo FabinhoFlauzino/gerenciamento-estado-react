@@ -4,7 +4,10 @@ import Produto from "../model/Produto";
 
 interface CarrinhoContextProps {
   itens: ItemCarrinho[]
+  valorTotal: number
   adicionarItem: (produto: Produto) => void
+  removerItem: (produto: Produto) => void
+  limparCarrinho: () => void
 }
 
 const CarrinhoContext = createContext<CarrinhoContextProps>({} as any)
@@ -22,13 +25,38 @@ export function CarrinhoProvider(props: any) {
     setItens([...outrosItens, novoItem].sort(ordernarItem))
   }
 
+  function removerItem(produto: Produto) {
+    const novosItems = itens.map(item => {
+      return item.produto.id === produto.id ? {
+        ...item, quantidade: item.quantidade - 1
+      } : item
+    }).filter(item => item.quantidade > 0)
+    setItens(novosItems)
+  }
+
+  function limparCarrinho(){
+    setItens([])
+  }
+
+  function calcularValorTotal() {
+    return itens.reduce((total: number, item: ItemCarrinho) => {
+      return total + (item.quantidade * item.produto.preco)
+    }, 0)
+  }
+
   function ordernarItem(a: ItemCarrinho, b: ItemCarrinho) {
-    return a.produto.id - b.produto.id
+    return a.produto.nome > b.produto.nome ? 1 : -1
   }
 
   return (
     <CarrinhoContext.Provider value={{
-      itens, adicionarItem
+      itens, 
+      adicionarItem, 
+      removerItem,
+      limparCarrinho, 
+      get valorTotal() {
+        return calcularValorTotal()
+      },
     }}>
       {props.children}
     </CarrinhoContext.Provider>
